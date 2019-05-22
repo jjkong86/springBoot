@@ -31,22 +31,22 @@ public class EmpController {
 	
 	@RequestMapping(value = "/emp", method = RequestMethod.GET)
 	public List<Emp> empList(ModelAndView mav) {
-		log.info("find All emp List");
+		log.info("find all emp list");
 		List<Emp> empList = Lists.newArrayList(empRepository.findAll());
 		return empList;
 	}
 	
 	@RequestMapping(value = "/emp/{empno}", method = RequestMethod.GET)
 	public GetEmpbyEmpno empToEmpno(@PathVariable("empno") int empno ) {
-		log.info("find empno : {}", empno);
+		log.info("start find empno : {}", empno);
 		
 		GetEmpbyEmpno res = new GetEmpbyEmpno();
 		try {
 			res.setResult(empRepository.findById(empno).get());	
 			log.info(res.toString());
 		} catch (Exception e) {
-			res.setCode(204);
-			res.setError("not found");
+			res.setCode(404);
+			res.setError("NOT FOUND");
 			res.setResultNull();
 		}
 		return res;
@@ -67,7 +67,7 @@ public class EmpController {
 	
 	@RequestMapping(value = "/empJoinList", method = RequestMethod.GET)
 	public List<Emp> empJoinDeptList() {
-		log.info("find emp join dept List");
+		log.info("find emp join dept list");
 		List<Emp> empList = Lists.newArrayList(empRepository.findAll());
 		if (CollectionUtils.isEmpty(empList)) {
 			log.info("empList is empty");

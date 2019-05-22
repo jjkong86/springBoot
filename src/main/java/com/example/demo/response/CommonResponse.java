@@ -7,5 +7,5 @@ import lombok.Data;
 @Data
 public class CommonResponse implements Constant{
 	int code = CODE_SUCCESS;
-    String error;
+    String error = DESC_SUCCESS;
 }
