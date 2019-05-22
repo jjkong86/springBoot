@@ -1,15 +1,22 @@
 package com.example.demo.model;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
+import javax.persistence.FetchType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 
-import lombok.Getter;
-import lombok.Setter;
+import org.hibernate.annotations.NotFound;
+import org.hibernate.annotations.NotFoundAction;
 
+import lombok.Data;
+
+@Data
 @Entity
-@Getter
-@Setter
 public class Emp{
 	
 	@Id
@@ -23,9 +30,14 @@ public class Emp{
 	private int comm;
 	private int deptno;
 	
+	@ManyToOne(fetch = FetchType.LAZY)
+	@NotFound(action=NotFoundAction.IGNORE)
+	@JoinColumn(name = "deptno", nullable=true, insertable = false, updatable = false)
+	private Dept dept;
+	
 	@Override
 	public String toString() {
-		return String.format("Emp[empno=%d, ename=%s, job=%s, mgr=%d, hiredate=%s, sal=%d, comm=%d, deptno=%d", 
-				empno, ename, job, mgr, hiredate, sal, comm, deptno);
+		return String.format("Emp[empno=%d, ename=%s, job=%s, mgr=%d, hiredate=%s, sal=%d, comm=%d, deptno=%d, dname=%s, loc=%s", 
+				empno, ename, job, mgr, hiredate, sal, comm, deptno, dept.getDname(), dept.getLoc());
 	}
 }
