@@ -67,7 +67,7 @@ public class ApiTestTemplate {
         HttpEntity<GetTransactionsRequest> request = new HttpEntity<GetTransactionsRequest>(param, headers);
         ResponseEntity<GetTransactionsResponse> responseEntityStr = restTemplate.postForEntity(gettransactions, request, GetTransactionsResponse.class);
         GetTransactionsResponse txs = responseEntityStr.getBody();
-        logger.info("===== tansaction count : "+txs.getResult().getTxs().size() + " =====");
+        logger.info("===== tansaction count : {} =====", txs.getResult().getTxs().size());
         for (Transaction tran : txs.getResult().getTxs()) {
         	logger.debug(tran.toString());
 		}

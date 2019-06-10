@@ -12,6 +12,7 @@ import lombok.Setter;
 @Data
 public class Transaction implements Serializable {
 
+	private static final long serialVersionUID = 1L;
 	private Date regDt;
     private String txid;
 	private String category;
