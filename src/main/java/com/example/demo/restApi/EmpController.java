@@ -2,7 +2,6 @@ package com.example.demo.restApi;
 
 import java.util.Collections;
 import java.util.List;
-import java.util.Optional;
 
 import javax.validation.Valid;
 
@@ -16,9 +15,9 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.example.demo.apiResponse.GetEmpbyEmpno;
 import com.example.demo.model.Emp;
 import com.example.demo.repository.EmpRepository;
-import com.example.demo.response.GetEmpbyEmpno;
 
 import lombok.extern.slf4j.Slf4j;
 

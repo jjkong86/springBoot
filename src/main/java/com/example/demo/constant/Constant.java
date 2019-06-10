@@ -10,4 +10,6 @@ public interface Constant {
 	String DESC_CREATED = "CREATED";
 	String DESC_ACCEPTED = "ACCEPTED";
 	String DESC_NOTFOUND = "NOTFOUND";
+	
+	String CATEGORY_SEND = "send";
 }
