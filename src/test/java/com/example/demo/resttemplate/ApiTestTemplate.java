@@ -1,5 +1,8 @@
 package com.example.demo.resttemplate;
 
+import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.MatcherAssert.assertThat;
+
 import java.io.IOException;
 
 import org.json.JSONException;
@@ -12,6 +15,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.junit4.SpringRunner;
@@ -22,6 +26,7 @@ import com.example.demo.apiParameter.GetTransactionsRequest;
 import com.example.demo.apiResponse.GetBlockCountResponse;
 import com.example.demo.apiResponse.GetTransactionsResponse;
 import com.example.demo.objects.Transaction;
+import com.example.demo.web.handler.RestTemplateResponseErrorHandler;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 @RunWith(SpringRunner.class)
@@ -45,11 +50,16 @@ public class ApiTestTemplate {
     	logger.info("--- beforeClass start ---");
     	getblockcount = commonUrl + "/getblockcount";
     	gettransactions = commonUrl + "/gettransactions";
+    	
     	restTemplate = new RestTemplate();
+    	restTemplate.setErrorHandler(new RestTemplateResponseErrorHandler());
+    	
         headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
         
         personJsonObject = new JSONObject();
+        
+        logger.info("--- beforeClass end ---");
     }
     
     @Test
@@ -57,6 +67,9 @@ public class ApiTestTemplate {
     	GetBlockCountResponse ret = new GetBlockCountResponse();
         HttpEntity<String> request = new HttpEntity<String>(personJsonObject.toString(), headers);
         ResponseEntity<GetBlockCountResponse> responseEntityStr = restTemplate.postForEntity(getblockcount, request, GetBlockCountResponse.class);
+        
+        assertThat(responseEntityStr.getStatusCode(), equalTo(HttpStatus.OK));
+        
         ret.setResponse(responseEntityStr.getBody());
         logger.debug(ret.toString());
     }
@@ -66,6 +79,8 @@ public class ApiTestTemplate {
         GetTransactionsRequest param = new GetTransactionsRequest(" ", 0, 0);
         HttpEntity<GetTransactionsRequest> request = new HttpEntity<GetTransactionsRequest>(param, headers);
         ResponseEntity<GetTransactionsResponse> responseEntityStr = restTemplate.postForEntity(gettransactions, request, GetTransactionsResponse.class);
+        assertThat(responseEntityStr.getStatusCode(), equalTo(HttpStatus.OK));
+        
         GetTransactionsResponse txs = responseEntityStr.getBody();
         logger.info("===== tansaction count : {} =====", txs.getResult().getTxs().size());
         for (Transaction tran : txs.getResult().getTxs()) {
