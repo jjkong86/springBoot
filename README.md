@@ -1,2 +1,2 @@
-# SpringBoot + gradle + jap
+# SpringBoot + gradle + jpa
 
