@@ -37,6 +37,8 @@ public class ApiTestTemplate {
     
     private static String getblockcount;
     private static String gettransactions;
+    private static String createWalletTest;
+    
     
     private static RestTemplate restTemplate;
     private static String commonUrl = "http://localhost:80/api/v1";
@@ -49,7 +51,8 @@ public class ApiTestTemplate {
     public static void runBeforeAllTestMethods() throws JSONException {
     	logger.info("--- beforeClass start ---");
     	getblockcount = commonUrl + "/getblockcount";
-    	gettransactions = commonUrl + "/gettransactions";
+    	gettransactions = commonUrl + "/lasttransactions";
+    	createWalletTest = commonUrl + "/createwalletTest";
     	
     	restTemplate = new RestTemplate();
     	restTemplate.setErrorHandler(new RestTemplateResponseErrorHandler());
@@ -75,16 +78,34 @@ public class ApiTestTemplate {
     }
     
     @Test
+    public void createWalletTest() throws IOException {
+        HttpEntity<String> request = new HttpEntity<String>(personJsonObject.toString(), headers);
+        ResponseEntity<String> responseEntityStr = restTemplate.postForEntity(createWalletTest, request, String.class);
+        assertThat(responseEntityStr.getStatusCode(), equalTo(HttpStatus.OK));
+        logger.debug(responseEntityStr.getBody());
+    }
+    
+    
+    @Test
     public void gettransactions() throws Exception {
         GetTransactionsRequest param = new GetTransactionsRequest(" ", 0, 0);
         HttpEntity<GetTransactionsRequest> request = new HttpEntity<GetTransactionsRequest>(param, headers);
-        ResponseEntity<GetTransactionsResponse> responseEntityStr = restTemplate.postForEntity(gettransactions, request, GetTransactionsResponse.class);
+        ResponseEntity<GetTransactionsResponse> responseEntityStr = new ResponseEntity<>(HttpStatus.FAILED_DEPENDENCY);
+        try {
+        	responseEntityStr = restTemplate.postForEntity(gettransactions+"2555114", request, GetTransactionsResponse.class);
+		} catch (Exception e) {
+			e.getStackTrace();
+		}
         assertThat(responseEntityStr.getStatusCode(), equalTo(HttpStatus.OK));
+       
         
         GetTransactionsResponse txs = responseEntityStr.getBody();
         logger.info("===== tansaction count : {} =====", txs.getResult().getTxs().size());
+        
         for (Transaction tran : txs.getResult().getTxs()) {
         	logger.debug(tran.toString());
+        	logger.debug(String.valueOf(tran.getAmount()));
+        	logger.debug(String.valueOf(tran.getFee()));
 		}
     }
 }
